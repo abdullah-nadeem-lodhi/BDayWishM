@@ -1,91 +1,74 @@
-import { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX, Music } from "lucide-react";
+import { useState } from "react";
+import { Play, Pause, Music, ExternalLink } from "lucide-react";
 
 export const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [showEmbed, setShowEmbed] = useState(false);
 
-  // Using a free birthday music URL
-  const musicUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const updateProgress = () => {
-      if (audio.duration) {
-        setProgress((audio.currentTime / audio.duration) * 100);
-      }
-    };
-
-    audio.addEventListener("timeupdate", updateProgress);
-    return () => audio.removeEventListener("timeupdate", updateProgress);
-  }, []);
+  const youtubeVideoId = "piyLXuSrDYo";
+  const youtubeUrl = `https://youtu.be/${youtubeVideoId}`;
 
   const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play();
-    }
+    setShowEmbed(true);
     setIsPlaying(!isPlaying);
-  };
-
-  const toggleMute = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.muted = !isMuted;
-    setIsMuted(!isMuted);
   };
 
   return (
     <div className="fixed bottom-6 right-6 z-40">
-      <div className="card-celebration flex items-center gap-4 p-4 backdrop-blur-sm bg-card/90">
-        <audio ref={audioRef} src={musicUrl} loop />
-        
-        <div className="flex items-center gap-2">
-          <Music className="w-5 h-5 text-primary" />
-          <span className="text-sm font-medium text-foreground hidden sm:block">
-            Birthday Tunes 🎵
-          </span>
+      <div className="card-celebration flex flex-col gap-3 p-4 backdrop-blur-sm bg-card/95">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Music className="w-5 h-5 text-primary" />
+            <span className="text-sm font-medium text-foreground hidden sm:block">
+              Birthday Song 🎵
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={togglePlay}
+              className="w-10 h-10 rounded-full bg-primary flex items-center justify-center hover:scale-110 transition-transform"
+            >
+              {isPlaying ? (
+                <Pause className="w-5 h-5 text-primary-foreground" />
+              ) : (
+                <Play className="w-5 h-5 text-primary-foreground ml-0.5" />
+              )}
+            </button>
+
+            <a
+              href={youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+              title="Open in YouTube"
+            >
+              <ExternalLink className="w-4 h-4 text-muted-foreground" />
+            </a>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={togglePlay}
-            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center hover:scale-110 transition-transform"
-          >
-            {isPlaying ? (
-              <Pause className="w-5 h-5 text-primary-foreground" />
-            ) : (
-              <Play className="w-5 h-5 text-primary-foreground ml-0.5" />
-            )}
-          </button>
+        {/* YouTube Embed */}
+        {showEmbed && (
+          <div className="relative w-64 sm:w-80 aspect-video rounded-lg overflow-hidden">
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=${isPlaying ? 1 : 0}&loop=1&playlist=${youtubeVideoId}`}
+              title="Birthday Music"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0"
+            />
+          </div>
+        )}
 
-          <button
-            onClick={toggleMute}
-            className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
-          >
-            {isMuted ? (
-              <VolumeX className="w-4 h-4 text-muted-foreground" />
-            ) : (
-              <Volume2 className="w-4 h-4 text-muted-foreground" />
-            )}
-          </button>
-        </div>
-
-        <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden hidden sm:block">
-          <div
-            className="h-full bg-primary transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        {!showEmbed && (
+          <p className="text-xs text-muted-foreground text-center">
+            Click play to start the music! 🎶
+          </p>
+        )}
       </div>
     </div>
   );
