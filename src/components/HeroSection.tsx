@@ -34,9 +34,13 @@ export const HeroSection = () => {
             Happy Birthday
           </h1>
           
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-display text-primary mb-8">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-display text-primary mb-4">
             Mahnoor! 🎂
           </h2>
+          
+          <p className="text-sm text-muted-foreground mb-8">
+            🗓️ January 8th → January 22nd • 14 days late, but the love is infinite! 💕
+          </p>
         </div>
 
         <div
